@@ -38,6 +38,9 @@ public class PercolationStats {
      * @param  trials number of times to run the experiment
      */
     public PercolationStats(int n, int trials) {
+        if (n <= 0 || trials <= 0) {
+            throw new IllegalArgumentException();
+        }
         thresholds = new double[trials];
         gridSize = n;
         sqrtOfT = Math.sqrt(trials);
@@ -92,7 +95,7 @@ public class PercolationStats {
     private void calculateStats() {
         this.meanVal = StdStats.mean(this.thresholds);
         this.stddevVal = StdStats.stddev(this.thresholds);
-        this.confidenceLoVal = meanVal - 
+        this.confidenceLoVal = this.meanVal - 
                             ((1.96*this.stddevVal)/this.sqrtOfT);
         this.confidenceHiVal = this.meanVal + 
                             ((1.96*this.stddevVal)/this.sqrtOfT);
@@ -146,9 +149,6 @@ public class PercolationStats {
         }
         int n = Integer.parseInt(args[0]);
         int trials = Integer.parseInt(args[1]);
-        if (n <= 0 || trials <= 0) {
-            throw new IllegalArgumentException();
-        }
         PercolationStats stats = new PercolationStats(n, trials);
         StdOut.println("mean                    = " + stats.mean());
         StdOut.println("stddev                  = " + stats.stddev());
