@@ -1,6 +1,12 @@
 /******************************************************************************
  *  Compilation:  javac Subset.java
  *  Execution:    java Subset
+ *  
+ *  Usage:
+ *  % echo A B C D E F G H I | java Subset 3
+ *  C
+ *  G
+ *  A
  *
  *  Implements Subset data type
  *
@@ -15,6 +21,13 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class Subset {
     
+    /**
+     * Subset client code. It takes a command line argument k and
+     * reads from StdIn N strings. It creates a subset of size k from
+     * the strings
+     *
+     * @param  args  Command line argument k
+     */
     public static void main(String[] args) {
 
         int k = Integer.parseInt(args[0]);
@@ -24,15 +37,8 @@ public class Subset {
         RandomizedQueue<String> rq = new RandomizedQueue<String>();
         try {
             while (true) {
-                s = StdIn.readString();
-                if (rq.size() == k) {
-                    shouldDequeue = true;
-                    output++;
-                }
-                if (shouldDequeue) StdOut.println(rq.dequeue());
-                if (output == k)break;
-                rq.enqueue(s);
-            }            
+                rq.enqueue(StdIn.readString());
+            }
         }
         catch (NoSuchElementException e) {
             while (output < k) {
