@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.ArrayList;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
@@ -6,8 +7,8 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class BruteCollinearPoints 
 {
-    private Point[] newPoints;
-    private LineSegment[] lines = new LineSegment[1];
+//    private Point[] myPoints;
+    private ArrayList<LineSegment> lines = new ArrayList<LineSegment>();
     private int lineCount = 0;
 //    finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
@@ -17,36 +18,29 @@ public class BruteCollinearPoints
     
     private void checkArgument(Point[] points) {
         if (points == null) throw new java.lang.IllegalArgumentException();
-        newPoints = new Point[points.length];
+        Arrays.sort(points);
         for (int i = 0; i < points.length; i++) {
             if (points[i] == null) throw new java.lang.NullPointerException();
-            if (checkDuplicate(points[i])) throw new java.lang.IllegalArgumentException();
+            if (i > 0 && points[i].compareTo(points[i-1]) == 0) throw new java.lang.IllegalArgumentException();
         }
     }
     
 
-    private boolean checkDuplicate(Point a) {
-        int i;
-        for (i = 0; i < newPoints.length; i++) {
-            if (newPoints[i] == null) break;
-            if (newPoints[i].slopeTo(a) == Double.NEGATIVE_INFINITY) {
-                return true;
-            }
-        }
-        newPoints[i] = a;
-        return false;
-    }
-    
     private void runAlgorithm(Point[] points) {
-        for (int i = 0; i < points.length; i++) {
-            for (int j = 0; j < points.length; j++) {
-                for (int k = 0; k < points.length; k++) {
-                    for (int l = 0; l < points.length; l++) {
+        for (int i = 0; i < points.length-3; i++) {
+            for (int j = i+1; j < points.length-2; j++) {
+                for (int k = j+1; k < points.length-1; k++) {
+                    for (int l = k+1; l < points.length; l++) {
                         Point[] segment = {points[i], points[j], points[k], points[l]};
                         Arrays.sort(segment);
                         if (checkCollinear(segment)) {
-                            LineSegment line = new LineSegment(segment[0], segment[segment.length-1]);
-                            addLine(line);
+                            Point x = segment[0];
+                            Point y = segment[segment.length-1];
+                            if (x.compareTo(points[i]) == 0) {
+                                LineSegment line = new LineSegment(x, y);
+                                lines.add(line);
+                                break;
+                            }
                         }
                     }
                 }
@@ -62,44 +56,16 @@ public class BruteCollinearPoints
         if (slope == Double.NEGATIVE_INFINITY) return false;
         return true;
     }
-    
-    private void addLine(LineSegment line) {
-        if (checkDuplicateLines(line)) return;
-        if (lineCount == lines.length) resizeLines(lines.length*2);
-        lines[lineCount++] = line;
-    }
-    
-    private boolean checkDuplicateLines(LineSegment line) {
-//        
-        for (int i = 0; i < lineCount; i++) {
-            if (lines[i].toString().equals(line.toString())) {
-                return true;
-            }
-        }
-//        printLines();
-        return false;
-    }
-    
-    private void printLines() {
-        for (int i = 0; i < lineCount; i++) StdOut.print(lines[i].toString() + ", ");
-        StdOut.println();
-    }
-    
-    private void resizeLines(int capacity) {
-        LineSegment[] newLines = new LineSegment[capacity];
-        for (int i = 0; i < lines.length; i++) newLines[i] = lines[i];
-        lines = newLines;
-    }
-    
+
 //    the number of line segments
     public int numberOfSegments() {
-        return lineCount;
+        return lines.size();
     }
     
 //    the line segments
     public LineSegment[] segments() {
-        LineSegment[] newLines = new LineSegment[lineCount];
-        for (int i = 0; i < lineCount; i++) newLines[i] = lines[i];
+        LineSegment[] newLines = new LineSegment[lines.size()];
+        for (int i = 0; i < lines.size(); i++) newLines[i] = lines.get(i);
         return newLines;
     }
     
