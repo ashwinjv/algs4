@@ -32,8 +32,6 @@ public class Subset {
 
         int k = Integer.parseInt(args[0]);
         int output = 0;
-        String s;
-        boolean shouldDequeue = false;
         RandomizedQueue<String> rq = new RandomizedQueue<String>();
         try {
             while (true) {
