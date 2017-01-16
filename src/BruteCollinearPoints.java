@@ -1,15 +1,24 @@
-import java.util.Arrays;
+/******************************************************************************
+ *  Compilation:  javac BruteCollinearPoints.java
+ *  Execution:    java BruteCollinearPoints
+ *
+ *  Implements BruteCollinearPoints data type
+ *
+ *  Author: Ashwin Venkatesan
+ *
+ ******************************************************************************/
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
-public class BruteCollinearPoints 
-{
+public class BruteCollinearPoints {
 //    private Point[] myPoints;
     private ArrayList<LineSegment> lines = new ArrayList<LineSegment>();
-    private int lineCount = 0;
+    
 //    finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
         checkArgument(points);
@@ -17,12 +26,14 @@ public class BruteCollinearPoints
     }
     
     private void checkArgument(Point[] points) {
-        if (points == null) throw new java.lang.IllegalArgumentException();
-        Arrays.sort(points);
+        if (points == null) throw new java.lang.NullPointerException();
         for (int i = 0; i < points.length; i++) {
             if (points[i] == null) throw new java.lang.NullPointerException();
-            if (i > 0 && points[i].compareTo(points[i-1]) == 0) throw new java.lang.IllegalArgumentException();
+            for (int j = 0; j < points.length; j++) {
+                if (i != j && points[i].compareTo(points[j]) == 0) throw new java.lang.IllegalArgumentException();
+            }
         }
+        
     }
     
 
@@ -30,17 +41,16 @@ public class BruteCollinearPoints
         for (int i = 0; i < points.length-3; i++) {
             for (int j = i+1; j < points.length-2; j++) {
                 for (int k = j+1; k < points.length-1; k++) {
+                    Point[] segment = {points[i], points[j], points[k], null};
+                    if (!checkCollinear(segment)) continue;
+                    double slope = points[i].slopeTo(points[j]);
                     for (int l = k+1; l < points.length; l++) {
-                        Point[] segment = {points[i], points[j], points[k], points[l]};
-                        Arrays.sort(segment);
-                        if (checkCollinear(segment)) {
-                            Point x = segment[0];
-                            Point y = segment[segment.length-1];
-                            if (x.compareTo(points[i]) == 0) {
-                                LineSegment line = new LineSegment(x, y);
-                                lines.add(line);
-                                break;
-                            }
+                        if (slope == points[k].slopeTo(points[l])) {
+                            segment[3] = points[l];
+                            Arrays.sort(segment);
+                            LineSegment line = new LineSegment(segment[0], segment[segment.length-1]);
+                            lines.add(line);
+                            break;
                         }
                     }
                 }
@@ -51,6 +61,7 @@ public class BruteCollinearPoints
     private boolean checkCollinear(Point[] points) {
         double slope = points[0].slopeTo(points[1]);
         for (int i = 1; i < points.length; i++) {
+            if (points[i] == null) continue;
             if (points[i-1].slopeTo(points[i]) != slope) return false;
         }
         if (slope == Double.NEGATIVE_INFINITY) return false;
@@ -72,15 +83,20 @@ public class BruteCollinearPoints
     public static void main(String[] args) {
         /* YOUR CODE HERE */
 //        Point a = new Point(1,1);
-//        Point b = new Point(2,2);
+//        Point b = new Point(1,1);
 //        Point c = new Point(3,3);
 //        Point d = new Point(4,4);
+//        Point e = new Point(5,7);
+//        Point f = new Point(8,9);
+//        Point g = new Point(4,10);
 //        Point[] points = new Point[4]; 
 //        points[0] = a;
 //        points[1] = b;
 //        points[2] = c;
 //        points[3] = d;
 //        BruteCollinearPoints bcp = new BruteCollinearPoints(points);
+    
+    
 //        // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();

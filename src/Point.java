@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *  Compilation:  javac Point.java
  *  Execution:    java Point
@@ -105,12 +104,12 @@ public class Point implements Comparable<Point> {
      */
     public Comparator<Point> slopeOrder() {
         /* YOUR CODE HERE */
-        return new PointComparator(this);
+        return new SlopeOrder(this);
     }
 
-    private class PointComparator implements Comparator<Point> {
+    private class SlopeOrder implements Comparator<Point> {
         private Point current;
-        public PointComparator(Point current) {
+        public SlopeOrder(Point current) {
             this.current = current;
         }
         public int compare(Point a, Point b) {
@@ -137,14 +136,14 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
-        Point a = new Point(1,1);
-        Point b = new Point(2,2);
+        Point a = new Point(1, 1);
+        Point b = new Point(2, 2);
         StdOut.println(a.slopeTo(a));
         StdOut.println(a.slopeTo(b));
         StdOut.println(b.slopeTo(a));
-        Point c = new Point(1,2);
+        Point c = new Point(1, 2);
         StdOut.println(a.slopeTo(c));
-        Point d = new Point(2,1);
+        Point d = new Point(2, 1);
         StdOut.println(a.slopeTo(d));
         
     }
